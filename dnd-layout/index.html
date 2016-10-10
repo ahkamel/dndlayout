@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<script src="jquery-3.1.1.min.js"></script>
+<script src="Constant.js"></script>
+<script src="dropmanager.js"></script>
+<script src="lym.js"></script>
+<script src="panel.js"></script>
+<script src="componentsplitter.js"></script>
+<script src="setsplitter.js"></script>
+<style>
+
+*{
+    margin:0;
+}
+
+body{
+padding:0px;
+margin:0px;
+}
+</style>
+</head>
+<body>
+<img id="dragMe" src="img_logo.gif" draggable="true"  width="336" height="69">
+<div id="dragMe" draggable="true">Drag me</div>
+<div id="compoentContainter" style="width:1300px;height:700px;">
+
+
+
+</div>
+
+
+<script>
+var lym = new LayoutManager(document.getElementById("compoentContainter"));
+
+lym.registerPanelDropped("barChart", function(panelContainer){alert(1);});
+</script>
+
+</body>
+
+
+</html>
