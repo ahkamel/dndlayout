@@ -1,6 +1,6 @@
 function LayoutManager(parent){
 	var self = this;
-	self.dropManager = new DropManager();
+	self.panelManager = new PanelManager();
 	var lymParent = parent;
 	lymParent.style.border="1px solid";
 	lymParent.ondragover = handleOnDragOver;
@@ -8,21 +8,21 @@ function LayoutManager(parent){
 	lymParent.ondrop = handleOnDrop;
 	function handleOnDragOver(event) {
 		event.preventDefault();
-		self.dropManager.dragOver(lymParent);
+		self.panelManager.dragOver(lymParent);
 		
 		
 	}
 	
 	function handleOnDragLeave(event) {
 		event.preventDefault();
-		self.dropManager.dragLeave(lymParent);
+		self.panelManager.dragLeave(lymParent);
 		
 		
 	}
 	function handleOnDrop(event) {
 		event.preventDefault();
 		
-		self.dropManager.dropPanel(lymParent);
+		self.panelManager.dropPanel(lymParent);
 		
 		
 		

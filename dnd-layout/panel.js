@@ -21,9 +21,9 @@ function Panel(panelManager){
 		var leftSplitter = new ComonentSplitter(panelManager,randomId, Constant.LEFT);
 		var topSplitter = new ComonentSplitter(panelManager,randomId, Constant.TOP);
 		var bottomSplitter = new ComonentSplitter(panelManager,randomId, Constant.BOTTOM);
-		
+		var panelTitle = new PanelTitle(self.id, panelManager);
 		self.parentDiv.appendChild(topSplitter.getSplitter());
-		self.parentDiv.appendChild(new PanelTitle().getTitle());
+		self.parentDiv.appendChild(panelTitle.getTitle());
 		self.parentDiv.appendChild(leftSplitter.getSplitter());
 		self.parentDiv.appendChild(self.container);	
 		self.parentDiv.appendChild(rightSplitter.getSplitter());
