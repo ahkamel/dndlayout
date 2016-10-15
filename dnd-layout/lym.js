@@ -22,7 +22,7 @@ function LayoutManager(parent){
 	function handleOnDrop(event) {
 		event.preventDefault();
 		
-		self.panelManager.dropPanel(lymParent);
+		self.panelManager.addPanel(lymParent);
 		
 		
 		

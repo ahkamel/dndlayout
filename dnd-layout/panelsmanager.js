@@ -2,7 +2,7 @@ function PanelManager() {
 	var self = this;
 	self.panels = [];
 	self.splitters = [];	
-	self.dropPanel = function(dropOver){
+	self.addPanel = function(dropOver){
 		var panel = new Panel(self);
 		panel.build();
 		if(self.panels.length == 0) {
@@ -12,7 +12,7 @@ function PanelManager() {
 		}else {
 			var panelId = dropOver.splitter.id.split(Constant.ID_SEPERATOR)[0];
 			var direction =dropOver.splitter.id.split(Constant.ID_SEPERATOR)[1];
-			findPanel(panelId, direction, self.panels, panel);
+			findPanelAndAdd(panelId, direction, self.panels, panel);
 		}
 	}
 	
@@ -26,17 +26,28 @@ function PanelManager() {
 		for(var row=0;row<panelsList.length;row++){
 			for(var column=0; column< panelsList[row].length; column++){
 				if(panelsList[row][column] instanceof  CompositePanel){
-					deletePanel(panelId);
+					deletePanel(panelId, panelsList[row][column].panels);
 				}
 				
 				if(panelsList[row][column].id == panelId){
-					debugger;
 					var removedPanel = document.getElementById(panelId+Constant.ID_SEPERATOR+Constant.PANEL_PARENT);
 					removedPanel.parentNode.removeChild(removedPanel);
 					if(panelsList[row].length == 1) {
+						debugger;
+						var deletedPanel = panelsList[row][column];
 						panelsList.splice(row, 1);
+						if(deletedPanel.compositePanel && deletedPanel.compositePanel.panels.length == 0){
+							deletedPanel.compositePanel.getParentDiv().parentNode.removeChild(deletedPanel.compositePanel.getParentDiv());
+							
+							findCompositeAndRemove(deletedPanel.compositePanel, deletedPanel.compositePanel.compositePanel);
+						} else {
+							var newHeight = 100/panelsList.length;
+							resizePanelsHeight(panelsList, newHeight);
+						}
 					} else {
 						panelsList[row].splice(column, 1);
+						var newWidth = 100/panelsList[row].length;
+						resizePanelsWidth(panelsList[row], newWidth);
 					}
 					return;
 				}
@@ -44,51 +55,67 @@ function PanelManager() {
 		}
 	}
 	
-	var findPanel = function(panelId, direction, panelsList, panel) {
+	var findCompositeAndRemove=function(composite, compositeParentList) {
+		
+		for(var row=0;row<compositeParentList.length;row++){
+			for(var column=0;column<compositeParentList[row].length; column++){
+				if(compositeParentList[row][column].id==composite.id){
+					compositeParentList[row].splice(column, 1);
+					var newWidth = 100/compositeParentList[row].length;
+					resizePanelsWidth(compositeParentList[row], newWidth);
+				}
+			}
+		}
+	}
+	
+	var findPanelAndAdd = function(panelId, direction, panelsList, panel) {
 			for(var row =0; row< panelsList.length; row++) {
 				for(var column = 0; column < panelsList[row].length; column++) {
 					if(panelsList[row][column] instanceof  CompositePanel){
-						findPanel(panelId, direction, panelsList[row][column].panels, panel);
+						panel.compositePanel=panelsList[row][column];
+						findPanelAndAdd(panelId, direction, panelsList[row][column].panels, panel);
 					}
 					
 					if(panelsList[row][column].id==panelId){
-					var dropOverPanel = panelsList[row][column];
-					var newPanelWidth = 100 / (panelsList[row].length + 1) ;
-					var newPanelHeight = 100 / (numOfPanelsInColumn(panelsList, column) + 1);
-							if(direction == Constant.TOP) {
-								if(panelsList[row].length>1){
-									var compositePanel = new CompositePanel();
-									compositePanel.init(dropOverPanel);
-									compositePanel.dropBefore(dropOverPanel.getPanelParentContainer(), panel, direction);
-									panelsList[row][column]=compositePanel;
-									compositePanel.panels.splice(0, 0, [panel]);
-								} else {
-									addNewRowTop(panelsList, row,  panel);
-									resizePanelsHeight(panelsList, column, newPanelHeight);
-									panel.dropBefore(dropOverPanel.getPanelParentContainer(),dropOverPanel.getParentDivWidthPercent() , newPanelHeight);
+						var dropOverPanel = panelsList[row][column];
+						var newPanelWidth = 100 / (panelsList[row].length + 1) ;
+						var newPanelHeight = 100 / (numOfPanelsInColumn(panelsList, column) + 1);
+								if(direction == Constant.TOP) {
+									if(panelsList[row].length>1){
+										var compositePanel = new CompositePanel();
+										compositePanel.init(dropOverPanel);
+										compositePanel.compositePanel = panelsList;
+										compositePanel.dropBefore(dropOverPanel.getPanelParentContainer(), panel, direction);
+										panelsList[row][column]=compositePanel;
+										compositePanel.panels.splice(0, 0, [panel]);
+									} else {
+										addNewRowTop(panelsList, row,  panel);
+										resizePanelsHeight(panelsList, newPanelHeight);
+										panel.dropBefore(dropOverPanel.getPanelParentContainer(),dropOverPanel.getParentDivWidthPercent() , newPanelHeight);
+									}
+								}else if(direction == Constant.LEFT) {
+									panelsList[row].splice(column, 0, panel);
+									resizePanelsWidth(panelsList[row], newPanelWidth);
+									panel.dropBefore(dropOverPanel.getPanelParentContainer(), newPanelWidth, dropOverPanel.getParentDivHeightPercent());
+								}else if(direction == Constant.BOTTOM) {
+									if(panelsList[row].length>1){
+										var compositePanel = new CompositePanel();
+										compositePanel.init(dropOverPanel);
+										compositePanel.compositePanel = panelsList;
+										compositePanel.dropAfter(dropOverPanel.getPanelParentContainer(), panel, direction);
+										panelsList[row][column]=compositePanel;
+										compositePanel.panels.splice(1, 0, [panel]);
+									} else {
+										addNewRowBottom(panelsList, row,panel);
+										resizePanelsHeight(panelsList, newPanelHeight);
+										panel.dropAfter(dropOverPanel.getPanelParentContainer(), dropOverPanel.getParentDivWidthPercent() , newPanelHeight);
+									}
+								} else if(direction == Constant.RIGHT) {
+									panelsList[row].splice(column+1, 0, panel);
+									resizePanelsWidth(panelsList[row], newPanelWidth);
+									panel.dropAfter(dropOverPanel.getPanelParentContainer(), newPanelWidth, dropOverPanel.getParentDivHeightPercent());
 								}
-							}else if(direction == Constant.LEFT) {
-								panelsList[row].splice(column, 0, panel);
-								resizePanelsWidth(panelsList[row], newPanelWidth);
-								panel.dropBefore(dropOverPanel.getPanelParentContainer(), newPanelWidth, dropOverPanel.getParentDivHeightPercent());
-							}else if(direction == Constant.BOTTOM) {
-								if(panelsList[row].length>1){
-									var compositePanel = new CompositePanel();
-									compositePanel.init(dropOverPanel);
-									compositePanel.dropAfter(dropOverPanel.getPanelParentContainer(), panel, direction);
-									panelsList[row][column]=compositePanel;
-									compositePanel.panels.splice(1, 0, [panel]);
-								} else {
-									addNewRowBottom(panelsList, row,panel);
-									resizePanelsHeight(panelsList, column, newPanelHeight);
-									panel.dropAfter(dropOverPanel.getPanelParentContainer(), dropOverPanel.getParentDivWidthPercent() , newPanelHeight);
-								}
-							} else if(direction == Constant.RIGHT) {
-								panelsList[row].splice(column+1, 0, panel);
-								resizePanelsWidth(panelsList[row], newPanelWidth);
-								panel.dropAfter(dropOverPanel.getPanelParentContainer(), newPanelWidth, dropOverPanel.getParentDivHeightPercent());
-							}
-						return;
+							return;
 					}
 				}
 			}
@@ -99,7 +126,7 @@ function PanelManager() {
 			panels[row].setParentDivWidthPercent(newWidth);
 		}
 	}
-	var resizePanelsHeight = function(panelsList, panelColumn, newHeight){
+	var resizePanelsHeight = function(panelsList, newHeight){
 		for(var row =0;row<panelsList.length;row++){
 			for(var column=0; column< panelsList[row].length;column++){
 				panelsList[row][column].setParentDivHeightPercent(newHeight);
@@ -124,9 +151,7 @@ function PanelManager() {
 		return num;
 	}
 	
-	self.removePanel= function (panelId) {
-		
-	}
+	
 	self.movePanels = function (panel1, panel2) {
 		
 	}

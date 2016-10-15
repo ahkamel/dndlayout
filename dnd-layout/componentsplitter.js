@@ -27,7 +27,7 @@ function ComonentSplitter(panelManager,idPrefix, idSuffix){
 	function handleOnDrop(event) {
 		event.preventDefault();
 		self.splitter.style.background="";
-		self.panelManager.dropPanel(self);
+		self.panelManager.addPanel(self);
 		event.stopPropagation();
 	}
 	function handleDragEnter(event) {

@@ -8,9 +8,9 @@ function Panel(panelManager){
 	var parentDivHeightPercent = "100";
 	var panelParentStyle="position:relative;float:left;overfollow:auto;";
 	self.parentDiv.style.cssText+=';'+ panelParentStyle;
-	
 	self.container.style.cssText+=';'+"position:absolute;top:30px;left:10px;right:10px;bottom:10px;background: #f6f6f6;box-shadow: 2px 2px 2px #888888;"
 	self.id = null;
+	self.compositePanel = null;
 	self.build = function() {
 		var randomId = Util.generateRandomNumber();
 		self.id=randomId;
