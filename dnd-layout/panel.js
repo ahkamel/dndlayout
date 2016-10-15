@@ -1,28 +1,29 @@
-function Panel(dropManager){
+function Panel(panelManager){
 	var self = this;
-	self.dropManager = dropManager;
+	self.panelManager = panelManager;
 	self.container = document.createElement('div');
 	self.parentDiv = document.createElement('div');
 	//Width and Height should be dyanmic calculated
 	var parentDivWidthPercent = "100";
 	var parentDivHeightPercent = "100";
-	var panelParentStyle="position:relative;float:left;";
+	var panelParentStyle="position:relative;float:left;overfollow:auto;";
 	self.parentDiv.style.cssText+=';'+ panelParentStyle;
 	
-	self.container.style.cssText+=';'+"position:absolute;top:10px;left:10px;right:10px;bottom:10px;background: lightgreen;"
+	self.container.style.cssText+=';'+"position:absolute;top:30px;left:10px;right:10px;bottom:10px;background: #f6f6f6;box-shadow: 2px 2px 2px #888888;"
 	self.id = null;
 	self.build = function() {
-		var timeStamp = new Date().getTime();
-		self.id=timeStamp;
-		self.container.id=timeStamp+Constant.ID_SEPERATOR+Constant.CONTAINER;
-		self.container.innerHTML = "<div>"+timeStamp+"</div>";
-		self.parentDiv.id=timeStamp+Constant.ID_SEPERATOR+Constant.PANEL_PARENT;
-		var rightSplitter = new ComonentSplitter(dropManager,timeStamp, Constant.RIGHT);
-		var leftSplitter = new ComonentSplitter(dropManager,timeStamp, Constant.LEFT);
-		var topSplitter = new ComonentSplitter(dropManager,timeStamp, Constant.TOP);
-		var bottomSplitter = new ComonentSplitter(dropManager,timeStamp, Constant.BOTTOM);
+		var randomId = Util.generateRandomNumber();
+		self.id=randomId;
+		self.container.id=randomId+Constant.ID_SEPERATOR+Constant.CONTAINER;
+		self.container.innerHTML = "<div>"+randomId+"</div>";
+		self.parentDiv.id=randomId+Constant.ID_SEPERATOR+Constant.PANEL_PARENT;
+		var rightSplitter = new ComonentSplitter(panelManager,randomId, Constant.RIGHT);
+		var leftSplitter = new ComonentSplitter(panelManager,randomId, Constant.LEFT);
+		var topSplitter = new ComonentSplitter(panelManager,randomId, Constant.TOP);
+		var bottomSplitter = new ComonentSplitter(panelManager,randomId, Constant.BOTTOM);
 		
 		self.parentDiv.appendChild(topSplitter.getSplitter());
+		self.parentDiv.appendChild(new PanelTitle().getTitle());
 		self.parentDiv.appendChild(leftSplitter.getSplitter());
 		self.parentDiv.appendChild(self.container);	
 		self.parentDiv.appendChild(rightSplitter.getSplitter());
@@ -69,10 +70,5 @@ function Panel(dropManager){
 		self.setParentDivHeightPercent(parentHeight);
 		referenceNode.parentNode.insertBefore(self.parentDiv, referenceNode);
 	}
-	self.dropTop = function(referenceNode, parentWidth, parentHeight) {
-		
-	}
-	self.dropBottom = function(referenceNode, parentWidth, parentHeight) {
-		
-	}
+	
 }

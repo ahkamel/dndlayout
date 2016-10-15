@@ -5,5 +5,6 @@ Constant={
 	RIGHT:"right",
 	LEFT:"left",
 	TOP:"top",
-	BOTTOM:"bottom"
+	BOTTOM:"bottom",
+	COMPOSITE:"composite"
 }

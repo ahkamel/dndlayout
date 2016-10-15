@@ -1,6 +1,6 @@
-function ComonentSplitter(dropManager,idPrefix, idSuffix){
+function ComonentSplitter(panelManager,idPrefix, idSuffix){
 	var self = this;
-	self.dropManager = dropManager;
+	self.panelManager = panelManager;
 	self.splitter = document.createElement('div');
 	self.splitter.id=idPrefix+Constant.ID_SEPERATOR+idSuffix;
 	self.splitter.ondragenter = handleDragEnter;
@@ -27,7 +27,7 @@ function ComonentSplitter(dropManager,idPrefix, idSuffix){
 	function handleOnDrop(event) {
 		event.preventDefault();
 		self.splitter.style.background="";
-		self.dropManager.dropPanel(self);
+		self.panelManager.dropPanel(self);
 		event.stopPropagation();
 	}
 	function handleDragEnter(event) {
