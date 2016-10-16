@@ -70,5 +70,7 @@ function Panel(panelManager){
 		self.setParentDivHeightPercent(parentHeight);
 		referenceNode.parentNode.insertBefore(self.parentDiv, referenceNode);
 	}
-	
+	self.stringify = function(){
+		return {pId:self.id,pWidth:self.getParentDivWidthPercent(),pHeight:self.getParentDivHeightPercent()};
+	}
 }

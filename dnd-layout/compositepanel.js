@@ -57,5 +57,16 @@ function CompositePanel(){
 		return self.parentDiv;
 	}
  
- 
+	self.stringify = function(){
+		var childeren = [];
+		appendChilderen(self.panels, childeren);
+		return {pId:self.id,pWidth:self.getParentDivWidthPercent(),pHeight:self.getParentDivHeightPercent(),children: childeren};
+	}
+	var appendChilderen = function(oldArray, childeren){
+		for(var row=0;row<oldArray.length;row++) {
+			for(var column=0; column<oldArray[row].length;column++){
+				childeren.push(oldArray[row][column].stringify());
+			}
+		}
+	}
 }

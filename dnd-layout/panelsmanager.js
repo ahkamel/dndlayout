@@ -61,8 +61,10 @@ function PanelManager() {
 			for(var column=0;column<compositeParentList[row].length; column++){
 				if(compositeParentList[row][column].id==composite.id){
 					compositeParentList[row].splice(column, 1);
-					var newWidth = 100/compositeParentList[row].length;
-					resizePanelsWidth(compositeParentList[row], newWidth);
+					var newWidth = 100/compositeParentList[column].length;
+					resizePanelsWidth(compositeParentList[column], newWidth);
+					var newHeight = 100/compositeParentList[row].length;
+					resizePanelsHeight(compositeParentList, newHeight);
 				}
 			}
 		}

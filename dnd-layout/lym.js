@@ -27,11 +27,22 @@ function LayoutManager(parent){
 		
 		
 	}
-	self.addPanel = function (panelNeighborId) {
-		var panel  = new Panel();
-		panel.build();
-		appendPanel(panel, panelNeighborId);
-		
+	self.stringify = function(){
+		var panels =[];
+		concateInStringfyArray(self.panelManager.panels, panels);
+		var ly=JSON.stringify({panels:panels});
+		return ly;
+	}
+	
+	var concateInStringfyArray = function(oldArray, newArray){
+		for(var row=0;row<oldArray.length;row++){
+			for(var column=0;column<oldArray[row].length;column++){
+				/*if(oldArray[row][column] instanceof CompositePanel) {
+					concateInStringfyArray(oldArray[row][column]);
+				}*/
+				newArray.push(oldArray[row][column].stringify());
+			}
+		}
 	}
 	
 	
